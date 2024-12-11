@@ -6,6 +6,7 @@ import DidYouKnow from './components/DidYouKnow';
 // import SessionHistory from './components/SessionHistory';
 import FocusModeManager from './components/FocusModeManager';
 import InstallPrompt from './components/InstallPrompt';
+import OfflineIndicator from './components/OfflineIndicator';
 
 function App() {
   const [isFocusModeActive, setIsFocusModeActive] = useState(false);
@@ -33,6 +34,7 @@ function App() {
           onSessionComplete={refreshSessions}
           onFocusModeChange={setIsFocusModeActive}
         />
+        <OfflineIndicator />
         <div className="mt-8">
           <DidYouKnow />
           <FocusMode />

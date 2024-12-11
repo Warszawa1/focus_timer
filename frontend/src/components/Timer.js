@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 // Production durations
-const DURATIONS = {
-  POMODORO: 25 * 60,    // 25 minutes
-  SHORT_BREAK: 5 * 60,  // 5 minutes
-  LONG_BREAK: 15 * 60   // 15 minutes
-};
+// const DURATIONS = {
+//   POMODORO: 25 * 60,    // 25 minutes
+//   SHORT_BREAK: 5 * 60,  // 5 minutes
+//   LONG_BREAK: 15 * 60   // 15 minutes
+// };
 
 // Testing durations - uncomment to use
-// const DURATIONS = {
-//   POMODORO: 25,      // 25 seconds
-//   SHORT_BREAK: 5,    // 5 seconds
-//   LONG_BREAK: 15     // 15 seconds
-// };
+const DURATIONS = {
+  POMODORO: 25,      // 25 seconds
+  SHORT_BREAK: 5,    // 5 seconds
+  LONG_BREAK: 15     // 15 seconds
+};
 
 const focusSound = new Audio('/focus-start.mp3');  // You'll need to add these sound files
 const breakSound = new Audio('/break-start.mp3');
@@ -68,18 +68,13 @@ function Timer() {
         
         // Check if all pomodoros are completed first
         if (newPomodoroCount === targetPomodoros) {
-            try {
-                completionSound.play();  // Only play completion sound
-            } catch (err) {
-                console.log('Sound playback failed:', err);
-            }
+            completionSound.play().catch(err => console.log('Sound failed:', err));
 
             if (notificationPermission === 'granted') {
-                const notification = new Notification('Congratulations!', {
+                new Notification('Congratulations!', {
                     body: 'You completed all your pomodoros for this session!',
                     icon: '/icon-192x192.png'
                 });
-                notification.onclick = () => window.focus();
             }
             
             setTimerConfig({
@@ -94,62 +89,57 @@ function Timer() {
             return;
         }
 
-        // If not complete, start break
-        try {
-            breakSound.play();  // Play break sound for regular transitions
-        } catch (err) {
-            console.log('Sound playback failed:', err);
-        }
-
+        // Start break
+        breakSound.play().catch(err => console.log('Sound failed:', err));
         const isLongBreakDue = newPomodoroCount % 4 === 0;
         const newDuration = isLongBreakDue ? DURATIONS.LONG_BREAK : DURATIONS.SHORT_BREAK;
 
-        if (notificationPermission === 'granted') {
-            const notification = new Notification('Focus Session Complete!', {
-                body: `Time for a ${isLongBreakDue ? 'long' : 'short'} break!`,
-                icon: '/icon-192x192.png'
-            });
-            notification.onclick = () => window.focus();
-        }
-
+        // Set next timer state immediately
         const now = Date.now();
-        setTimerConfig({
+        const nextEndTime = now + (newDuration * 1000);
+        
+        setTimerConfig(prev => ({
+            ...prev,
             startTime: now,
-            endTime: now + (newDuration * 1000),
+            endTime: nextEndTime,
             duration: newDuration,
             isActive: true,
             type: 'break',
             pomodoroCount: newPomodoroCount
-        });
+        }));
         setDisplayTime(newDuration);
 
-    } else {
-        // Break completed, start new pomodoro
-        try {
-            focusSound.play();
-        } catch (err) {
-            console.log('Sound playback failed:', err);
-        }
-
         if (notificationPermission === 'granted') {
-            const notification = new Notification('Break Complete!', {
-                body: 'Time to focus again!',
+            new Notification('Focus Session Complete!', {
+                body: `Time for a ${isLongBreakDue ? 'long' : 'short'} break!`,
                 icon: '/icon-192x192.png'
             });
-            notification.onclick = () => window.focus();
         }
-
+    } else {
+        // Break completed, start new pomodoro
+        focusSound.play().catch(err => console.log('Sound failed:', err));
+        
         const now = Date.now();
+        const nextDuration = DURATIONS.POMODORO;
+        const nextEndTime = now + (nextDuration * 1000);
+
         setTimerConfig(prev => ({
-            startTime: now,
-            endTime: now + (DURATIONS.POMODORO * 1000),
-            duration: DURATIONS.POMODORO,
-            isActive: true,
-            type: 'focus',
-            pomodoroCount: prev.pomodoroCount
-        }));
-        setDisplayTime(DURATIONS.POMODORO);
-    }
+          ...prev,
+          startTime: now,
+          endTime: nextEndTime,
+          duration: nextDuration,
+          isActive: true,
+          type: 'focus'
+      }));
+      setDisplayTime(nextDuration);
+
+      if (notificationPermission === 'granted') {
+          new Notification('Break Complete!', {
+              body: 'Time to focus again!',
+              icon: '/icon-192x192.png'
+          });
+      }
+  }
 }, [timerConfig.type, timerConfig.pomodoroCount, targetPomodoros, notificationPermission]);
 
 // Add startTimer function to play focus sound when first starting
@@ -267,12 +257,7 @@ const startTimer = useCallback(() => {
           </select>
         </label>
       </div>
-      
-      {/* <img 
-        src={timerConfig.type === 'break' ? '/icon-512x512.png' : '/icon-192x192.png'} 
-        alt="Timer mode" 
-        className="w-8 h-8 mx-auto mb-2"
-      /> */}
+
 
       <div className="relative w-72 h-72 mx-auto group">
   {/* Background Icon - hidden on hover */}
@@ -358,15 +343,6 @@ const startTimer = useCallback(() => {
       <div className={`mt-4 ${timerConfig.type === 'break' ? 'text-green-600' : 'text-purple-600'}`}>
             {getModeMessage()}
           </div>
-
-      {/* {timerConfig.type === 'break' && (
-        <div className="mt-4 text-green-600">
-          Take a {timerConfig.duration === DURATIONS.LONG_BREAK ? '15-minute' : '5-minute'} break! 
-          Stretch, hydrate, or take a quick walk.
-        </div>
-      )} */}
-
-
     </div>
   );
 }
