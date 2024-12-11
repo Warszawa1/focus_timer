@@ -183,17 +183,33 @@ const startTimer = useCallback(() => {
         
         if (remaining <= 0) {
           clearInterval(interval);
+          // Ensure we complete the session
+          setDisplayTime(0);
           handleTimerComplete();
         } else {
           setDisplayTime(remaining);
         }
-      }, 1000);
+      }, 500);
     }
+
+    // Add visibility change handler
+    const handleVisibilityChange = () => {
+      if (document.hidden && timerConfig.isActive) {
+        // When app goes to background, calculate and update time
+        const now = Date.now();
+        const remaining = Math.ceil((timerConfig.endTime - now) / 1000);
+        setDisplayTime(remaining);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
 
     return () => {
       if (interval) {
         clearInterval(interval);
       }
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [timerConfig.isActive, timerConfig.startTime, timerConfig.endTime, handleTimerComplete]);
 
