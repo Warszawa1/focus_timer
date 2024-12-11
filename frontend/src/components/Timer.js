@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 // Production durations
-// const DURATIONS = {
-  // POMODORO: 25 * 60,    // 25 minutes
-  // SHORT_BREAK: 5 * 60,  // 5 minutes
-  // LONG_BREAK: 15 * 60   // 15 minutes
-// };
+const DURATIONS = {
+  POMODORO: 25 * 60,    // 25 minutes
+  SHORT_BREAK: 5 * 60,  // 5 minutes
+  LONG_BREAK: 15 * 60   // 15 minutes
+};
 
 // Testing durations - uncomment to use
-const DURATIONS = {
-  POMODORO: 25,      // 25 seconds
-  SHORT_BREAK: 5,    // 5 seconds
-  LONG_BREAK: 15     // 15 seconds
-};
+// const DURATIONS = {
+//   POMODORO: 25,      // 25 seconds
+//   SHORT_BREAK: 5,    // 5 seconds
+//   LONG_BREAK: 15     // 15 seconds
+// };
 
 const focusSound = new Audio('/focus-start.mp3');  // You'll need to add these sound files
 const breakSound = new Audio('/break-start.mp3');
