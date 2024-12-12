@@ -43,7 +43,12 @@ Session history
 Extended statistics
 Additional customization options
 
+![Screenshot 2024-12-12 at 16 58 19](https://github.com/user-attachments/assets/f27efb47-44e2-4d4d-aa2a-6292400216d0)
+![Screenshot 2024-12-12 at 17 07 58](https://github.com/user-attachments/assets/e1e82ff8-5872-4c66-adba-2cd05b693b71)
 
-![screenshot1](https://github.com/user-attachments/assets/e0a48dd7-a289-4b9e-a817-6dfb74618fd0)
+![Screenshot 2024-12-12 at 17 16 34](https://github.com/user-attachments/assets/19afa90d-a0d9-462c-946c-14babc9fff7f)
+![Screenshot 2024-12-12 at 17 16 40](https://github.com/user-attachments/assets/c7a68da1-9651-44a4-9787-e30308de2565)
+
+
 
 
