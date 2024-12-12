@@ -41,6 +41,7 @@ A minimalist Pomodoro-style timer built as a Progressive Web App (PWA). This app
 * Additional customization options
 
 *Note: This project was developed as a learning experience in PWA development and React best practices.*
+##
 
 
 ![Screenshot 2024-12-12 at 16 58 19](https://github.com/user-attachments/assets/f4247d5c-f2e5-48bc-9383-7a83d0705600)
